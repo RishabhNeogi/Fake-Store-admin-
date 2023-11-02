@@ -50,7 +50,6 @@ const Home = () => {
     const sortOrder = isAscending ? 1 : -1;
     return sortOrder * (a[sortBy] < b[sortBy] ? -1 : 1);
   });
-  products = sortedProducts;
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
