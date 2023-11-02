@@ -26,7 +26,7 @@ const Login = () => {
     <div className="Auth-form-container">
       <form onSubmit={handleSubmit} className="Auth-form">
         <div className="Auth-form-content">
-          <h3 className="Auth-form-title">G&O ART</h3>
+          <h3 className="Auth-form-title">LOGIN</h3>
           <p>Admin Login</p>
           {error && <div className="error-message">{error}</div>}
           <div className="form-group mt-3">
