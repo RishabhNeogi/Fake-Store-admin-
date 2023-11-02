@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Table from "react-bootstrap/Table";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import AddUser from "./AddUser";
 
@@ -9,6 +9,7 @@ const Users = () => {
   const [records, setRecords] = useState([]);
   const [columns, setColumns] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [searchText, setSearchText] = useState(""); // Step 1: Create state for search text
 
   useEffect(() => {
     fetchData();
@@ -28,6 +29,13 @@ const Users = () => {
     setShowForm(true);
   };
 
+  // Step 3: Filter the records based on search text
+  const filteredRecords = records.filter((record) =>
+    Object.values(record).some((value) =>
+      value.toString().toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
+
   return (
     <div style={{ padding: "10px" }}>
       <div
@@ -37,7 +45,11 @@ const Users = () => {
           maxHeight: "100vh",
         }}
       >
-        <Navbar onAddDetailsClick={handleAddDetailsClick} />
+        <Navbar
+          onAddDetailsClick={handleAddDetailsClick}
+          searchText={searchText}
+          setSearchText={setSearchText}
+        />
         {showForm ? <AddUser /> : null}
         <div
           style={{
@@ -82,7 +94,7 @@ const Users = () => {
               </tr>
             </thead>
             <tbody>
-              {records.map((row, rowIndex) => (
+              {filteredRecords.map((row, rowIndex) => (
                 <tr key={rowIndex}>
                   {columns.map((head, columnIndex) => (
                     <td
@@ -96,10 +108,8 @@ const Users = () => {
                       {head === "id" ? (
                         <Link to={`/user/${row[head]}`}>{row[head]}</Link>
                       ) : head === "address" ? (
-                        // Display relevant address properties
                         `${row[head].city}, ${row[head].street}, ${row[head].zipcode}`
                       ) : head === "name" ? (
-                        // Display the first and last name individually
                         `${row[head].firstname} ${row[head].lastname}`
                       ) : (
                         row[head]
