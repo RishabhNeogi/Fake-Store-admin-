@@ -175,6 +175,7 @@ const ItemDetails = () => {
                       <a
                         className="btn btn-primary shadow-0"
                         onClick={handleAddToCart}
+                        href="#$"
                       >
                         <i className="me-1 fa fa-shopping-basket"></i> Add to
                         cart
