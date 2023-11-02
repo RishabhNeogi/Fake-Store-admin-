@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -20,19 +20,13 @@ const Home = () => {
   const showForm = useSelector((state) => state.showForm);
   const currentPage = useSelector((state) => state.currentPage);
 
+  const [searchText, setSearchText] = useState(""); // Step 1: Create state for search text
+
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchProducts());
     }
   }, [dispatch, status]);
-
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (status === "failed") {
-    return <div>Error: An error occurred while fetching products.</div>;
-  }
 
   const handlePageChange = (pageNumber) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -49,6 +43,11 @@ const Home = () => {
     dispatch(setShowForm(true));
   };
 
+  // Step 3: Filter the current products based on search text
+  const filteredProducts = currentProducts.filter((product) =>
+    product.title.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <div style={{ display: "flex" }}>
       <div
@@ -59,10 +58,15 @@ const Home = () => {
           overflowX: "hidden",
         }}
       >
-        <NavbarComponent onAddDetailsClick={handleAddDetailsClick} />
+        <NavbarComponent
+          onAddDetailsClick={handleAddDetailsClick}
+          searchText={searchText} // Pass searchText and setSearchText to NavbarComponent
+          setSearchText={setSearchText}
+        />
         {showForm ? <ProductForm /> : null}
+
         <Row xs={1} md={3} className="g-4">
-          {currentProducts.map((product, idx) => (
+          {filteredProducts.map((product, idx) => (
             <Col key={idx}>
               <Link to={`/item/${product.id}`}>
                 <Card style={{ margin: "35px 15px", cursor: "pointer" }}>
@@ -116,6 +120,7 @@ const Home = () => {
             </Col>
           ))}
         </Row>
+
         <div>
           <Pagination style={{ justifyContent: "center" }}>
             {Array.from({

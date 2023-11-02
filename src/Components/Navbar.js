@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-function NavbarComponent({ onAddDetailsClick }) {
+function NavbarComponent({ onAddDetailsClick, searchText, setSearchText }) {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid>
@@ -26,6 +26,8 @@ function NavbarComponent({ onAddDetailsClick }) {
               placeholder="Search"
               className="me-2"
               aria-label="Search"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)} // Change 'onchange' to 'onChange'
             />
             <Button variant="outline-success">Search</Button>
           </Form>
