@@ -1,10 +1,23 @@
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
+import React from "react";
+import { Button, Container, Form, Nav, Navbar } from "react-bootstrap";
 
-function NavbarComponent({ onAddDetailsClick, searchText, setSearchText }) {
+function NavbarComponent({
+  onAddDetailsClick,
+  searchText,
+  setSearchText,
+  onSort,
+  records,
+}) {
+  const [isAscending, setIsAscending] = React.useState(true); // Step 1: Create state for sorting
+  const toggleSort = () => {
+    const sortedRecords = [...records].sort((a, b) => {
+      const sortOrder = isAscending ? 1 : -1;
+      return sortOrder * (a.id - b.id); // Change this to sort by the 'id' field
+    });
+    setIsAscending(!isAscending);
+    onSort(sortedRecords);
+  };
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid>
@@ -18,7 +31,9 @@ function NavbarComponent({ onAddDetailsClick, searchText, setSearchText }) {
             style={{ maxHeight: "100px" }}
             navbarScroll
           >
-            <Nav.Link href="#action1">Sort-Data</Nav.Link>
+            <Nav.Link onClick={toggleSort} href="#action1">
+              Sort-Data
+            </Nav.Link>
           </Nav>
           <Form className="d-flex">
             <Form.Control
@@ -27,7 +42,7 @@ function NavbarComponent({ onAddDetailsClick, searchText, setSearchText }) {
               className="me-2"
               aria-label="Search"
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)} // Change 'onchange' to 'onChange'
+              onChange={(e) => setSearchText(e.target.value)}
             />
             <Button variant="outline-success">Search</Button>
           </Form>

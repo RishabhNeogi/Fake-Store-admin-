@@ -9,7 +9,8 @@ const Users = () => {
   const [records, setRecords] = useState([]);
   const [columns, setColumns] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [searchText, setSearchText] = useState(""); // Step 1: Create state for search text
+  const [searchText, setSearchText] = useState("");
+  const [isAscending, setIsAscending] = useState(true); // Step 1: Create state for sorting
 
   useEffect(() => {
     fetchData();
@@ -29,7 +30,19 @@ const Users = () => {
     setShowForm(true);
   };
 
-  // Step 3: Filter the records based on search text
+  const handleSort = (columnName) => {
+    setIsAscending(!isAscending);
+    const sortedRecords = [...records].sort((a, b) => {
+      const sortOrder = isAscending ? 1 : -1;
+      return sortOrder * (a[columnName] < b[columnName] ? -1 : 1);
+    });
+    setRecords(sortedRecords);
+  };
+
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
+
   const filteredRecords = records.filter((record) =>
     Object.values(record).some((value) =>
       value.toString().toLowerCase().includes(searchText.toLowerCase())
@@ -48,7 +61,9 @@ const Users = () => {
         <Navbar
           onAddDetailsClick={handleAddDetailsClick}
           searchText={searchText}
-          setSearchText={setSearchText}
+          setSearchText={handleSearch}
+          onSort={handleSort}
+          records={records}
         />
         {showForm ? <AddUser /> : null}
         <div
@@ -75,7 +90,12 @@ const Users = () => {
                     }}
                     key={head}
                   >
-                    {head}
+                    <span
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleSort(head)}
+                    >
+                      {head}
+                    </span>
                   </th>
                 ))}
                 <th

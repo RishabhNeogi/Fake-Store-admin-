@@ -19,6 +19,8 @@ const Home = () => {
   const status = useSelector((state) => state.products.status);
   const showForm = useSelector((state) => state.showForm);
   const currentPage = useSelector((state) => state.currentPage);
+  const [sortBy, setSortBy] = useState("title"); // Step 1: Create state for sorting
+  const [isAscending, setIsAscending] = useState(true); // Step 1: Create state for sorting
 
   const [searchText, setSearchText] = useState(""); // Step 1: Create state for search text
 
@@ -32,6 +34,24 @@ const Home = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     dispatch(setCurrentPage(pageNumber));
   };
+
+  const handleSort = (field) => {
+    if (field === sortBy) {
+      setIsAscending(!isAscending);
+    } else {
+      setSortBy(field);
+      setIsAscending(true);
+    }
+  };
+
+  // Step 3: Sort the products based on the selected field and order
+
+  const sortedProducts = [...products].sort((a, b) => {
+    const sortOrder = isAscending ? 1 : -1;
+    return sortOrder * (a[sortBy] < b[sortBy] ? -1 : 1);
+  });
+  products = sortedProducts;
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(
@@ -62,6 +82,8 @@ const Home = () => {
           onAddDetailsClick={handleAddDetailsClick}
           searchText={searchText} // Pass searchText and setSearchText to NavbarComponent
           setSearchText={setSearchText}
+          onSort={handleSort}
+          records={products}
         />
         {showForm ? <ProductForm /> : null}
 
